@@ -17,6 +17,8 @@ require_once "app/models/JobModel.php";
 $read = new ReadWebService();
 $jobs = new JobModel();
 // Obtenemos los proveedores
+echo "Iniciando";
+
 $proveedores = $jobs->getProveedores();
 // Actualizamos la informacion
 foreach($proveedores AS $proveedor => $key) {
@@ -25,14 +27,14 @@ foreach($proveedores AS $proveedor => $key) {
     //     $solicitudes = $read->read($key["url_webservice"], $key["solicitud"], "post");
     //     $ids = $jobs->updateJobsEmpleosGobMX($key["id"], $key["url_trabajo"], $solicitudes);
      //} 
-     if($key['proveedor'] == 'APE') {
-        $solicitudes = $read->read($key["url_webservice"], $key["solicitud"]);
-        $ids = $jobs->updateJobsAPE($key["id"], $key["url_trabajo"], $solicitudes);
-    } 
-    // elseif($key['proveedor'] == 'SPE'){
-    //     $solicitudes = $read->readSPE($key["url_webservice"]);
-    //     $ids = $jobs->updateJobsSPE($key["id"], $key["url_trabajo"], $solicitudes);
-    // }
+    //  if($key['proveedor'] == 'APE') {
+    //     $solicitudes = $read->read($key["url_webservice"], $key["solicitud"]);
+    //     $ids = $jobs->updateJobsAPE($key["id"], $key["url_trabajo"], $solicitudes);
+    // } 
+    if($key['proveedor'] == 'SPE'){
+        $solicitudes = $read->readSPE($key["url_webservice"]);
+        $ids = $jobs->updateJobsSPE($key["id"], $key["url_trabajo"], $solicitudes);
+    }
         
     
     // Desactivamos los trabajos que ya no existen

@@ -50,10 +50,13 @@ class DBConnect
      */
     public static function getInstance()
     {
+        echo "Entrando";
+
         if ( !isset(self::$instance) ) {
             //self::$instance = new self();
             // Read the file
-            self::$file = new FileReader($_SERVER['DOCUMENT_ROOT'] . "\\clr-solicitudes\\app\\config\\Database.ini");
+            // self::$file = new FileReader($_SERVER['DOCUMENT_ROOT'] . "\\clr-solicitudes\\app\\config\\Database.ini");
+            self::$file = new FileReader("/var/www/html/code/app/config/Database.ini");
             // self::$file = new FileReader(".\code\config\Database.ini");
             self::$data = self::$file->readINI(False);
             /**
@@ -69,7 +72,9 @@ class DBConnect
                     array( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION)
                 );
                 self::$instance->setAttribute(PDO::ATTR_PERSISTENT, $dsn);
+            echo "Conexion exitosa";
             }
+
             catch (PDOException $e)
             {
                 die("PDO CONNECTION ERROR: " . $e->getMessage() . "<br/>");

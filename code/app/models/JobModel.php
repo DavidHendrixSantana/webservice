@@ -104,15 +104,15 @@ class JobModel extends Model
                 $query->bindValue('solicitud_id', $solicitud_id, PDO::PARAM_INT);
                 $query->bindValue('proveedor_id', $proveedor_id, PDO::PARAM_STR);
                 $query->bindValue('cno_id', $cno_id, PDO::PARAM_INT);
-                $query->bindValue('nombre', utf8_decode($value['tituloOferta']), PDO::PARAM_STR);
-                $query->bindValue('descripcion', utf8_decode($value['descripcion']), PDO::PARAM_STR);
-                $query->bindValue('empresa', utf8_decode($value['nombreEmpresa']), PDO::PARAM_STR);
+                $query->bindValue('nombre', ($value['tituloOferta']), PDO::PARAM_STR);
+                $query->bindValue('descripcion', ($value['descripcion']), PDO::PARAM_STR);
+                $query->bindValue('empresa', ($value['nombreEmpresa']), PDO::PARAM_STR);
                 $query->bindValue('salario_mensual', $value['salarioOfrecido'], PDO::PARAM_STR);
                 $query->bindValue('meses_exp', $value['aniosExperiencia'], PDO::PARAM_STR);
                 $query->bindValue('uri', $uri, PDO::PARAM_STR);
                 $query->bindValue('pais', "Mexico", PDO::PARAM_STR);
-                $query->bindValue('departamento', utf8_decode($value['entidad']), PDO::PARAM_STR);
-                $query->bindValue('municipio', utf8_decode($value['municipio']), PDO::PARAM_STR);
+                $query->bindValue('departamento', ($value['entidad']), PDO::PARAM_STR);
+                $query->bindValue('municipio', ($value['municipio']), PDO::PARAM_STR);
                 $query->execute();
             } catch (Exception  $e) {
                 throw new SQLException($e);
@@ -134,7 +134,7 @@ class JobModel extends Model
                 VALUES
                 (:solicitud_id, :proveedor_id, :cno_id, :prf_codigo_sofia, :nombre, :descripcion, :empresa,
                 :salario_mensual, :jornada, :meses_exp, :horario, :es_teletrabajo, :uri, :pais,
-                :departamento, :municipio)
+                :departamento, :municipio, processed=0)
                 ON DUPLICATE KEY UPDATE
                 proveedor_id = :proveedor_id, cno_id=:cno_id, prf_codigo_sofia=:prf_codigo_sofia, nombre=:nombre,
                 descripcion=:descripcion, empresa=:empresa, salario_mensual=:salario_mensual, jornada=:jornada,
@@ -162,9 +162,9 @@ class JobModel extends Model
                     $query->bindValue('proveedor_id', $proveedor_id, PDO::PARAM_STR);
                     $query->bindValue('cno_id', $solicitud['CodigoVacante'], PDO::PARAM_INT);
                     $query->bindValue('prf_codigo_sofia', $prf_codigo_sofia, PDO::PARAM_INT);
-                    $query->bindValue('nombre', utf8_decode($solicitud['Cargo']), PDO::PARAM_STR);
-                    $query->bindValue('descripcion', utf8_decode($solicitud['VacTexto']), PDO::PARAM_STR);
-                    $query->bindValue('empresa', utf8_decode($solicitud['NombreSede']), PDO::PARAM_STR);
+                    $query->bindValue('nombre', ($solicitud['Cargo']), PDO::PARAM_STR);
+                    $query->bindValue('descripcion', ($solicitud['VacTexto']), PDO::PARAM_STR);
+                    $query->bindValue('empresa', ($solicitud['NombreSede']), PDO::PARAM_STR);
                     $query->bindValue('salario_mensual', $solicitud['VacRandoSalarial'], PDO::PARAM_STR);
                     $query->bindValue('jornada', $solicitud['VacJornada'], PDO::PARAM_STR);
                     $query->bindValue('meses_exp', "", PDO::PARAM_STR);
@@ -172,8 +172,8 @@ class JobModel extends Model
                     $query->bindValue('es_teletrabajo', 0, PDO::PARAM_BOOL);
                     $query->bindValue('uri', "", PDO::PARAM_STR);
                     $query->bindValue('pais', 'Colombia', PDO::PARAM_STR);
-                    $query->bindValue('departamento', utf8_decode($solicitud['VacDepartamento']), PDO::PARAM_STR);
-                    $query->bindValue('municipio', utf8_decode($solicitud['VacCiudad']), PDO::PARAM_STR);
+                    $query->bindValue('departamento', ($solicitud['VacDepartamento']), PDO::PARAM_STR);
+                    $query->bindValue('municipio', ($solicitud['VacCiudad']), PDO::PARAM_STR);
                     $query->execute();
                 } catch (Exception  $e) {
                     throw new SQLException($e);
