@@ -38,7 +38,7 @@ foreach($proveedores AS $proveedor => $key) {
         
     
     // Desactivamos los trabajos que ya no existen
-    $jobs->deactiveJobs($ids);
+    // $jobs->deactiveJobs($ids);
 }
 // Lanzamos mensaje de finalizacion y salimos del Script
 echo "Finalizado";
