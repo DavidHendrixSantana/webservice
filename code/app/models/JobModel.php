@@ -134,7 +134,7 @@ class JobModel extends Model
                 VALUES
                 (:solicitud_id, :proveedor_id, :cno_id, :prf_codigo_sofia, :nombre, :descripcion, :empresa,
                 :salario_mensual, :jornada, :meses_exp, :horario, :es_teletrabajo, :uri, :pais,
-                :departamento, :municipio, processed=0)
+                :departamento, :municipio)
                 ON DUPLICATE KEY UPDATE
                 proveedor_id = :proveedor_id, cno_id=:cno_id, prf_codigo_sofia=:prf_codigo_sofia, nombre=:nombre,
                 descripcion=:descripcion, empresa=:empresa, salario_mensual=:salario_mensual, jornada=:jornada,
@@ -249,5 +249,20 @@ class JobModel extends Model
         } catch (Exception  $e) {
             throw new SQLException($e);
         }
+    }
+
+    public function startProcessingJobs(){
+        try {
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, 'https://192.168.100.250:8000/proccessJobs');
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_HEADER, 0);
+            $data = curl_exec($ch);
+            curl_close($ch);
+            print("Vacantes procesadas");
+        } catch (\Throwable $th) {
+            echo $th;f
+        }
+       
     }
 }
