@@ -5,18 +5,7 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);*/
 // Cargmos los autoloader para las clases
 
-require 'guzzle/vendor/autoload.php';
-use GuzzleHttp\Client;
-try {
-    $client = new Client;
-    $client->setDefaultOption('verify', false);
-    $response = $client->get('https://career-latam-pruebas.territorium.com/proccessJobs');
-    echo $response;
-    return $response;
-} catch (\Throwable $th) {
-    echo $th;
-}
-return true;
+
 
 
 define('BASE_PATH', realpath(dirname(__FILE__)));

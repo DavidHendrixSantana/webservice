@@ -2,6 +2,8 @@
 
 use src\DB\Exception\SQLException;
 use src\Model\Model;
+require 'guzzle/vendor/autoload.php';
+use GuzzleHttp\Client;
 
 /**
  * @author Arturo Villalpando
@@ -252,17 +254,17 @@ class JobModel extends Model
     }
 
     public function startProcessingJobs(){
+
         try {
-            $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, 'https://192.168.100.250:8000/proccessJobs');
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_HEADER, 0);
-            $data = curl_exec($ch);
-            curl_close($ch);
-            print("Vacantes procesadas");
+            $client = new Client;
+            $client->setDefaultOption('verify', false);
+            $response = $client->get('https://career-latam-pruebas.territorium.com/proccessJobs');
+            echo $response;
+            return $response;
         } catch (\Throwable $th) {
-            echo $th;f
+            echo $th;
         }
+        return true;
        
     }
 }
