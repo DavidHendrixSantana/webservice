@@ -2,7 +2,8 @@
 
 use src\DB\Exception\SQLException;
 use src\Model\Model;
-require 'guzzle/vendor/autoload.php';
+// require 'guzzle/vendor/autoload.php';
+require './vendor/autoload.php';
 use GuzzleHttp\Client;
 
 /**
@@ -241,6 +242,7 @@ class JobModel extends Model
      */
     public function deactiveJobs($ids = array())
     {
+
         $ids = implode(",", $ids);
         $sql = "UPDATE trabajos_solicitudes SET activo = 0 WHERE activo = 1 AND solicitud_id NOT IN ($ids)";
         try {
@@ -249,22 +251,83 @@ class JobModel extends Model
 
             return $query->fetch();
         } catch (Exception  $e) {
-            throw new SQLException($e);
+            
+            echo "Error de SQL: " . $e->getMessage();
         }
     }
 
     public function startProcessingJobs(){
 
         try {
-            $client = new Client;
-            $client->setDefaultOption('verify', false);
-            $response = $client->get('https://career-latam-pruebas.territorium.com/proccessJobs');
-            echo $response;
-            return $response;
+            $client = new Client([
+                // Base URI is used with relative requests
+                'base_uri' => 'https://career-latam-pruebas.territorium.com/',
+            ]);
+            $res = $client->request('GET', 'proccessJobs', ['verify' => false]);
+            $arr_res= json_decode($res->getBody());
+            echo $arr_res;
         } catch (\Throwable $th) {
             echo $th;
         }
         return true;
        
+    }
+
+    public function updateJobsEmpleoCom($proveedor_id, $url_trabajo, $solicitudes)
+    {
+
+        $ids = array();
+        
+        $sql = "INSERT INTO trabajos_solicitudes
+                (solicitud_id, proveedor_id, cno_id, prf_codigo_sofia, nombre, descripcion, empresa, 
+                salario_mensual, jornada, meses_exp, horario, es_teletrabajo, uri, pais, departamento, municipio)
+                VALUES
+                (:solicitud_id, :proveedor_id, :cno_id, :prf_codigo_sofia, :nombre, :descripcion, :empresa,
+                :salario_mensual, :jornada, :meses_exp, :horario, :es_teletrabajo, :uri, :pais,
+                :departamento, :municipio)
+                ON DUPLICATE KEY UPDATE
+                proveedor_id = :proveedor_id, cno_id=:cno_id, prf_codigo_sofia=:prf_codigo_sofia, nombre=:nombre,
+                descripcion=:descripcion, empresa=:empresa, salario_mensual=:salario_mensual, jornada=:jornada,
+                meses_exp=:meses_exp, horario=:horario, es_teletrabajo=:es_teletrabajo, uri=:uri,
+                pais=:pais, departamento=:departamento, municipio=:municipio, activo=1";
+        
+
+    
+        foreach ($solicitudes as $solicitud){
+            
+                
+                $solicitud_id = str_replace("-","",$solicitud['id']);
+                $solicitud_name = str_replace(" ","-",strtolower($solicitud['title']));
+                //$prf_codigo_sofia = substr($solicitud['CodigoVacante'], 0, 4);
+                //$es_teletrabajo = 0;
+                $uri = $url_trabajo . $solicitud_name . '/'. $solicitud_id;
+                try {
+                    $query = $this->db->prepare($sql);
+                    $query->bindValue('solicitud_id', $solicitud_id, PDO::PARAM_INT);
+                    $query->bindValue('proveedor_id', $proveedor_id, PDO::PARAM_STR);
+                    $query->bindValue('cno_id', $solicitud['id'], PDO::PARAM_INT);
+                    $query->bindValue('prf_codigo_sofia', "", PDO::PARAM_INT);
+                    $query->bindValue('nombre', $solicitud['title'], PDO::PARAM_STR);
+                    $query->bindValue('descripcion', $solicitud['description'], PDO::PARAM_STR);
+                    $query->bindValue('empresa', $solicitud['companyName'], PDO::PARAM_STR);
+                    $query->bindValue('salario_mensual', $solicitud['salaryInfo'], PDO::PARAM_STR);
+                    $query->bindValue('jornada', "", PDO::PARAM_STR);
+                    $query->bindValue('meses_exp', "", PDO::PARAM_STR);
+                    $query->bindValue('horario', "", PDO::PARAM_STR);
+                    $query->bindValue('es_teletrabajo',"", PDO::PARAM_BOOL);
+                    $query->bindValue('uri', $uri, PDO::PARAM_STR);
+                    $query->bindValue('pais', 'Colombia', PDO::PARAM_STR);
+                    $query->bindValue('departamento', "", PDO::PARAM_STR);
+                    $query->bindValue('municipio', $solicitud['city'], PDO::PARAM_STR);
+                    $query->execute();
+                } catch (PDOException $e) {
+                    // Manejo de la excepción de SQL
+                    echo "Error de SQL: " . $e->getMessage();
+                }
+                $ids[] = $solicitud_id;
+                 
+        }
+
+        return $ids;
     }
 }

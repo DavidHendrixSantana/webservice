@@ -55,7 +55,8 @@ class DBConnect
         if ( !isset(self::$instance) ) {
             //self::$instance = new self();
             // Read the file
-            self::$file = new FileReader("/var/www/html/code/app/config/Database.ini");
+            // self::$file = new FileReader("/var/www/html/code/app/config/Database.ini");
+            self::$file = new FileReader("./app/config/Database.ini");
            
             self::$data = self::$file->readINI(False);
             /**
