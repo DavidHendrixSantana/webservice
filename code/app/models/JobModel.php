@@ -257,11 +257,11 @@ class JobModel extends Model
     }
 
     public function startProcessingJobs(){
-
+        echo ("\nComenzando procesamiento de vacantes");
         try {
             $client = new Client([
                 // Base URI is used with relative requests
-                'base_uri' => 'https://career-latam-pruebas.territorium.com/',
+                'base_uri' => 'http://127.0.0.1:8000/',
             ]);
             $res = $client->request('GET', 'proccessJobs', ['verify' => false]);
             $arr_res= json_decode($res->getBody());

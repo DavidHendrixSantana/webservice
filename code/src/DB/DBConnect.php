@@ -50,7 +50,7 @@ class DBConnect
      */
     public static function getInstance()
     {
-        echo "Entrando";
+        echo "Iniciando Proceso";
 
         if ( !isset(self::$instance) ) {
             //self::$instance = new self();
@@ -72,7 +72,7 @@ class DBConnect
                     array( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION)
                 );
                 self::$instance->setAttribute(PDO::ATTR_PERSISTENT, $dsn);
-            echo "Conexion exitosa";
+            echo "\nConexion exitosa";
             }
 
             catch (PDOException $e)
