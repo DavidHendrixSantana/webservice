@@ -32,7 +32,9 @@ foreach($proveedores AS $proveedor => $key) {
             echo "\nObteniendo vacantes APE";
             $solicitudes = $read->read($key["url_webservice"], $key["solicitud"]);
             $id_ape = $jobs->updateJobsAPE($key["id"], $key["url_trabajo"], $solicitudes);
-            array_merge($ids,$id_ape);
+            $ids= array_merge($ids,$id_ape);
+         
+
             
         }
         if($key['proveedor'] == "empleo.com/co"){
@@ -67,12 +69,14 @@ foreach($proveedores AS $proveedor => $key) {
 
             $solicitudes = $read->readEmpleoCom($key["url_webservice"], $my_cookie, $token);
             $ids_empleo = $jobs->updateJobsEmpleoCom($key["id"], $key["url_trabajo"], $solicitudes);
-            array_merge($ids,$ids_empleo);
+            $ids= array_merge($ids,$ids_empleo);
+
 
         }
-        echo "\nActualizando estatus de vacantes";
-        $jobs->deactiveJobs($ids);
-
     }
+    echo("\n Total procesadas:  ");
+    echo(count($ids));
+    echo "\nActualizando estatus de vacantes";
+    $jobs->deactiveJobs($ids);
 echo "\nFinalizado";
 exit;

@@ -96,6 +96,7 @@ class ReadWebService
 
             if ($httpCode == 200) {
                 $json_response = json_decode($response, true);
+
             $jobs = array_merge($jobs, $json_response['results']);
             } else {
                 $message = 'Index: ' . $data['pageIndex'] . ' | ERROR: ' . $httpCode;

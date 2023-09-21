@@ -3,7 +3,7 @@
 use src\DB\Exception\SQLException;
 use src\Model\Model;
 // require 'guzzle/vendor/autoload.php';
-require './vendor/autoload.php';
+// require './vendor/autoload.php';
 use GuzzleHttp\Client;
 
 /**
@@ -76,6 +76,7 @@ class JobModel extends Model
             }
             $ids[] = $solicitud_id;
         }
+
 
         return $ids;
     }
@@ -294,30 +295,30 @@ class JobModel extends Model
 
     
         foreach ($solicitudes as $solicitud){
-            
                 
                 $solicitud_id = str_replace("-","",$solicitud['id']);
                 $solicitud_name = str_replace(" ","-",strtolower($solicitud['title']));
+                $uri = $url_trabajo . $solicitud_name . '/'. $solicitud_id;
+
                 //$prf_codigo_sofia = substr($solicitud['CodigoVacante'], 0, 4);
                 //$es_teletrabajo = 0;
-                $uri = $url_trabajo . $solicitud_name . '/'. $solicitud_id;
                 try {
                     $query = $this->db->prepare($sql);
                     $query->bindValue('solicitud_id', $solicitud_id, PDO::PARAM_INT);
                     $query->bindValue('proveedor_id', $proveedor_id, PDO::PARAM_STR);
                     $query->bindValue('cno_id', $solicitud['id'], PDO::PARAM_INT);
-                    $query->bindValue('prf_codigo_sofia', "", PDO::PARAM_INT);
+                    $query->bindValue('prf_codigo_sofia', 0, PDO::PARAM_INT);
                     $query->bindValue('nombre', $solicitud['title'], PDO::PARAM_STR);
                     $query->bindValue('descripcion', $solicitud['description'], PDO::PARAM_STR);
                     $query->bindValue('empresa', $solicitud['companyName'], PDO::PARAM_STR);
                     $query->bindValue('salario_mensual', $solicitud['salaryInfo'], PDO::PARAM_STR);
-                    $query->bindValue('jornada', "", PDO::PARAM_STR);
-                    $query->bindValue('meses_exp', "", PDO::PARAM_STR);
-                    $query->bindValue('horario', "", PDO::PARAM_STR);
-                    $query->bindValue('es_teletrabajo',"", PDO::PARAM_BOOL);
+                    $query->bindValue('jornada', "null", PDO::PARAM_STR);
+                    $query->bindValue('meses_exp', "null", PDO::PARAM_STR);
+                    $query->bindValue('horario', "null", PDO::PARAM_STR);
+                    $query->bindValue('es_teletrabajo',0, PDO::PARAM_BOOL);
                     $query->bindValue('uri', $uri, PDO::PARAM_STR);
                     $query->bindValue('pais', 'Colombia', PDO::PARAM_STR);
-                    $query->bindValue('departamento', "", PDO::PARAM_STR);
+                    $query->bindValue('departamento', "null", PDO::PARAM_STR);
                     $query->bindValue('municipio', $solicitud['city'], PDO::PARAM_STR);
                     $query->execute();
                 } catch (PDOException $e) {
@@ -327,7 +328,9 @@ class JobModel extends Model
                 $ids[] = $solicitud_id;
                  
         }
-
+        echo ("\n");
+        echo ("Ids procesadas");
+        echo (count($ids));
         return $ids;
     }
 }
